@@ -5,6 +5,8 @@ ships honest zero-knowledge shielded payments end-to-end. Built over a
 sequence of milestones, each with explicit scope and adversarial test
 coverage.
 
+<img width="1672" height="941" alt="ChatGPT Image May 29, 2026, 01_35_51 PM" src="https://github.com/user-attachments/assets/49eff5d6-27b9-4bdf-b5c0-359fcfee0249" />
+
 ## What this is
 
 - **Post-quantum signatures everywhere** — CRYSTALS-Dilithium replaces ECDSA
@@ -21,6 +23,14 @@ coverage.
   the STARK shielded pool in real time
 - **Persistent state** — chain + wallet survive restart with deterministic
   state reconstruction
+
+## LIVE DEMO
+
+**NODE 1 + Miner** https://46.224.128.50/?token=W9DV4YhYMS1i00bhOfX-j2h3drIZC-65X253ftAYYuo
+
+**NODE 2** https://46.224.128.50:8443/?token=W9DV4YhYMS1i00bhOfX-j2h3drIZC-65X253ftAYYuo
+
+**NODE 3** https://46.224.128.50:9443/?token=W9DV4YhYMS1i00bhOfX-j2h3drIZC-65X253ftAYYuo
 
 The cryptographic story is *no hand-waving*. Every gap is documented;
 every closure has soundness tests. Five self-found bugs and defects
