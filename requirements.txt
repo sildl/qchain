@@ -1,0 +1,33 @@
+# QChain Python dependencies.
+#
+# Install with:
+#   pip install -r requirements.txt --break-system-packages
+#
+# qstark_py (the Rust STARK extension) is NOT on PyPI — build it from
+# qstark_py/ via maturin. See deploy/README.md Step 3.
+
+# Core chain
+pqcrypto>=0.2.0          # Dilithium / ML-DSA post-quantum signatures
+ecdsa>=0.18              # secp256k1 for M4 Schnorr-based anonymous txs
+
+# Dashboard
+fastapi>=0.100
+uvicorn[standard]>=0.20
+pydantic>=2.0
+websockets>=11.0
+
+# Wallet encryption (T21 closure)
+cryptography>=41.0
+argon2-cffi>=21.0
+
+# Quantum RNG (lazy-imported — optional at runtime but needed for PoS)
+qiskit>=1.0
+qiskit-aer>=0.13
+
+# Optional: real IBM Quantum hardware backend (needs IBM_QUANTUM_TOKEN env)
+# qiskit-ibm-runtime>=0.20
+
+# Testing (not needed for deployment, but needed to run the test suite)
+pytest>=7.0
+pytest-timeout>=2.0
+hypothesis>=6.0

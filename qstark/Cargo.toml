@@ -1,0 +1,19 @@
+[package]
+name = "qstark"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "qstark"
+path = "src/lib.rs"
+
+[[bin]]
+name = "qstark"
+path = "src/main.rs"
+
+[dependencies]
+winterfell = "=0.8.3"
+blake3 = "=1.5.4"
+# Direct access to Winter's hash + math crates
+winter-crypto = "=0.8.3"
+winter-math = "=0.8.3"

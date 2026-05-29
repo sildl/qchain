@@ -1,0 +1,53 @@
+[Unit]
+Description=QChain Node 1 (bootstrap + dashboard)
+Documentation=https://github.com/sildl/qchain
+# Network must be up before the dashboard binds
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=qchain
+Group=qchain
+WorkingDirectory=/opt/qchain
+EnvironmentFile=/etc/qchain/qchain.env
+
+# Node 1 is the bootstrap. It does not connect to any peer at startup
+# (nodes 2 and 3 connect to it). It exposes the dashboard on the
+# public bind address (QCHAIN_DASHBOARD_BIND, typically 0.0.0.0).
+#
+# Note: the --host flag of dashboard.server controls both the p2p
+# listening interface AND the dashboard HTTP bind. For node 1 we
+# pass the public bind (so the dashboard is reachable from outside),
+# but the followers connect to it via 127.0.0.1 (internal route).
+# This is fine because 0.0.0.0 binding accepts both.
+ExecStart=/usr/bin/python3 -m qchain.dashboard.server \
+    --node-id node-1-bootstrap \
+    --host ${QCHAIN_DASHBOARD_BIND} \
+    --port ${QCHAIN_NODE_1_PORT} \
+    --http ${QCHAIN_DASHBOARD_PORT} \
+    --auth-token ${QCHAIN_DASHBOARD_TOKEN} \
+    --wallet /var/lib/qchain/node-1.wallet.json
+
+# Restart on failure with 5s backoff; cap at 30s to avoid restart storms.
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+# Log to systemd journal. View with: journalctl -u qchain-node-1
+StandardOutput=journal
+StandardError=journal
+
+# Security hardening — research-grade, not production
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+# /opt/qchain holds the read-only repo; no writes needed.
+ReadOnlyPaths=/opt/qchain
+# Allow writes to /var/lib/qchain for any future persistence work
+ReadWritePaths=/var/lib/qchain
+
+[Install]
+WantedBy=multi-user.target

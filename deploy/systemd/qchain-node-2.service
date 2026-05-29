@@ -1,0 +1,47 @@
+[Unit]
+Description=QChain Node 2 (follower, connects to node-1)
+Documentation=https://github.com/sildl/qchain
+# Wait for node-1 (bootstrap) so the peer connection succeeds on first try.
+# If node-1 starts after us, we'd still eventually connect via gossip, but
+# starting in order is cleaner for the systemd status output.
+After=network-online.target qchain-node-1.service
+Wants=network-online.target qchain-node-1.service
+
+[Service]
+Type=simple
+User=qchain
+Group=qchain
+WorkingDirectory=/opt/qchain
+EnvironmentFile=/etc/qchain/qchain.env
+
+# Node 2 binds to 127.0.0.1 (no need for public exposure) and
+# connects to node-1's p2p port as its bootstrap peer.
+# Its dashboard runs on QCHAIN_NODE_2_HTTP_PORT but bound to
+# localhost only — used for debugging via curl/SSH tunnel,
+# not reachable from the public internet.
+ExecStart=/usr/bin/python3 -m qchain.dashboard.server \
+    --node-id node-2 \
+    --host 127.0.0.1 \
+    --port ${QCHAIN_NODE_2_PORT} \
+    --http ${QCHAIN_NODE_2_HTTP_PORT} \
+    --peer 127.0.0.1:${QCHAIN_NODE_1_PORT} \
+    --auth-token ${QCHAIN_DASHBOARD_TOKEN} \
+    --wallet /var/lib/qchain/node-2.wallet.json
+
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+StandardOutput=journal
+StandardError=journal
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/qchain
+ReadWritePaths=/var/lib/qchain
+
+[Install]
+WantedBy=multi-user.target

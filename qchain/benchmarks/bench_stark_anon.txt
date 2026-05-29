@@ -1,0 +1,47 @@
+==============================================================================
+STARK-anon proving pipeline benchmark
+==============================================================================
+
+Configuration:
+  Measured iterations: 20
+  Warmup iterations:   3 (excluded from stats)
+  Tree population:      1001 notes
+    decoys before:     500
+    target note:       1 (at position 500)
+    decoys after:      500
+  Anonymity set:       1,048,576 (depth-20 sparse Merkle)
+
+Host:
+  python_version    : 3.12.3
+  platform          : Linux-6.18.5-x86_64-with-glibc2.39
+  machine           : x86_64
+  processor         : x86_64
+  qstark_py_module  : /usr/local/lib/python3.12/dist-packages/qstark_py/__init__.py
+  merkle_depth      : 20
+  field_modulus     : 18446744069414584321
+
+Per-phase timings (milliseconds):
+
+  Phase                    mean     median      stdev        min        max
+  ------------------ ---------- ---------- ---------- ---------- ----------
+  setup                   0.002      0.002      0.000      0.001      0.002
+  auth_path               0.018      0.019      0.003      0.014      0.022
+  stark_prove            32.764     32.675      0.544     31.952     34.121
+  python_checks           0.039      0.040      0.012      0.029      0.086
+  verify                  0.695      0.691      0.056      0.607      0.826
+  ------------------ ---------- ---------- ---------- ---------- ----------
+  TOTAL                  33.518     33.533      0.544     32.641     34.846
+
+Percentage of mean total per phase:
+
+  setup                0.01%  
+  auth_path            0.06%  
+  stark_prove         97.75%  ████████████████████████████████████████████████
+  python_checks        0.12%  
+  verify               2.07%  █
+
+Proof size: 96602 – 96602 bytes (mean 96602, ~94.3 KiB)
+All verifications OK: True
+
+Bottleneck: see the phase with the largest %-of-total figure.
+==============================================================================

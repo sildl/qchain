@@ -1,0 +1,11 @@
+[build-system]
+requires = ["maturin>=1.0"]
+build-backend = "maturin"
+
+[project]
+name = "qstark_py"
+version = "0.1.0"
+description = "Python bindings for qstark zk-STARK proofs"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]

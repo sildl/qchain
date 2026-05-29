@@ -1,0 +1,17 @@
+[package]
+name = "qstark_py"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "qstark_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "=0.20.3", features = ["extension-module"] }
+qstark = { path = "../qstark" }
+winter-math = "=0.8.3"
+winter-crypto = "=0.8.3"
+
+# Lock to compatible older versions
+blake3 = "=1.5.4"

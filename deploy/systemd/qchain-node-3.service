@@ -1,0 +1,44 @@
+[Unit]
+Description=QChain Node 3 (follower, connects to node-1 and node-2)
+Documentation=https://github.com/sildl/qchain
+After=network-online.target qchain-node-1.service qchain-node-2.service
+Wants=network-online.target qchain-node-1.service qchain-node-2.service
+
+[Service]
+Type=simple
+User=qchain
+Group=qchain
+WorkingDirectory=/opt/qchain
+EnvironmentFile=/etc/qchain/qchain.env
+
+# Node 3 connects to BOTH node-1 and node-2 as peers. This makes
+# the topology a small clique (every node connects to every other),
+# which is the simplest gossip network. Real deployments would use
+# partial-mesh topologies, but for 3 nodes a full mesh is fine.
+ExecStart=/usr/bin/python3 -m qchain.dashboard.server \
+    --node-id node-3 \
+    --host 127.0.0.1 \
+    --port ${QCHAIN_NODE_3_PORT} \
+    --http ${QCHAIN_NODE_3_HTTP_PORT} \
+    --peer 127.0.0.1:${QCHAIN_NODE_1_PORT} \
+    --peer 127.0.0.1:${QCHAIN_NODE_2_PORT} \
+    --auth-token ${QCHAIN_DASHBOARD_TOKEN} \
+    --wallet /var/lib/qchain/node-3.wallet.json
+
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+StandardOutput=journal
+StandardError=journal
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/qchain
+ReadWritePaths=/var/lib/qchain
+
+[Install]
+WantedBy=multi-user.target

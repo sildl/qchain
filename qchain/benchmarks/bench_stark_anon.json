@@ -1,0 +1,344 @@
+{
+  "config": {
+    "iterations": 20,
+    "warmup": 3,
+    "decoys_before": 500,
+    "decoys_after": 500,
+    "output_dir": "/tmp/bench_output"
+  },
+  "host_info": {
+    "python_version": "3.12.3",
+    "platform": "Linux-6.18.5-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "qstark_py_module": "/usr/local/lib/python3.12/dist-packages/qstark_py/__init__.py",
+    "merkle_depth": 20,
+    "field_modulus": 18446744069414584321
+  },
+  "timings": [
+    {
+      "iteration": 0,
+      "is_warmup": true,
+      "setup_ms": 0.0036590000149772095,
+      "auth_path_ms": 0.016746000000011918,
+      "stark_prove_ms": 53.018184999984896,
+      "python_checks_ms": 0.0464210000075127,
+      "verify_ms": 0.6983579999939593,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 1,
+      "is_warmup": true,
+      "setup_ms": 0.004447000009122348,
+      "auth_path_ms": 0.021642999996629442,
+      "stark_prove_ms": 33.95095199999787,
+      "python_checks_ms": 0.05596600001922525,
+      "verify_ms": 0.6499729999802639,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 2,
+      "is_warmup": true,
+      "setup_ms": 0.0018700000055105193,
+      "auth_path_ms": 0.019726000004993693,
+      "stark_prove_ms": 33.562050000000454,
+      "python_checks_ms": 0.04471499997293904,
+      "verify_ms": 0.6594720000236975,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 0,
+      "is_warmup": false,
+      "setup_ms": 0.002088000002231638,
+      "auth_path_ms": 0.019688000008954987,
+      "stark_prove_ms": 34.12104799997451,
+      "python_checks_ms": 0.044207000001961205,
+      "verify_ms": 0.6589170000097511,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 1,
+      "is_warmup": false,
+      "setup_ms": 0.0024069999824405386,
+      "auth_path_ms": 0.020841999997855964,
+      "stark_prove_ms": 32.95043900001815,
+      "python_checks_ms": 0.04331699997806027,
+      "verify_ms": 0.7362220000004527,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 2,
+      "is_warmup": false,
+      "setup_ms": 0.00221100000885599,
+      "auth_path_ms": 0.021095999983344882,
+      "stark_prove_ms": 32.593491000000085,
+      "python_checks_ms": 0.040252000019336265,
+      "verify_ms": 0.6696519999991324,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 3,
+      "is_warmup": false,
+      "setup_ms": 0.0020869999843853293,
+      "auth_path_ms": 0.022053000009236712,
+      "stark_prove_ms": 32.99523600000498,
+      "python_checks_ms": 0.042360000009011856,
+      "verify_ms": 0.6780389999789804,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 4,
+      "is_warmup": false,
+      "setup_ms": 0.0019250000207193807,
+      "auth_path_ms": 0.022286999978859967,
+      "stark_prove_ms": 32.964947000010625,
+      "python_checks_ms": 0.03987400000937669,
+      "verify_ms": 0.6943349999914972,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 5,
+      "is_warmup": false,
+      "setup_ms": 0.00186900001608592,
+      "auth_path_ms": 0.019874999992453013,
+      "stark_prove_ms": 32.758387999990646,
+      "python_checks_ms": 0.03995800000211602,
+      "verify_ms": 0.7146900000236656,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 6,
+      "is_warmup": false,
+      "setup_ms": 0.0021209999943039293,
+      "auth_path_ms": 0.01994799998783492,
+      "stark_prove_ms": 32.68885400001409,
+      "python_checks_ms": 0.04026599998496749,
+      "verify_ms": 0.8256970000104502,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 7,
+      "is_warmup": false,
+      "setup_ms": 0.002037000001564593,
+      "auth_path_ms": 0.020155000015620317,
+      "stark_prove_ms": 32.91603099998497,
+      "python_checks_ms": 0.03913300000135678,
+      "verify_ms": 0.6950690000167015,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 8,
+      "is_warmup": false,
+      "setup_ms": 0.002271999989034157,
+      "auth_path_ms": 0.020814999999174688,
+      "stark_prove_ms": 33.44320100001141,
+      "python_checks_ms": 0.04006099999287471,
+      "verify_ms": 0.6992880000211699,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 9,
+      "is_warmup": false,
+      "setup_ms": 0.002168999998275467,
+      "auth_path_ms": 0.019586000007620896,
+      "stark_prove_ms": 32.44589799999176,
+      "python_checks_ms": 0.041028999987702264,
+      "verify_ms": 0.7124159999989388,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 10,
+      "is_warmup": false,
+      "setup_ms": 0.0019119999876693328,
+      "auth_path_ms": 0.01728899999875466,
+      "stark_prove_ms": 32.4246119999998,
+      "python_checks_ms": 0.03097900000170739,
+      "verify_ms": 0.6653690000177903,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 11,
+      "is_warmup": false,
+      "setup_ms": 0.0015569999902709242,
+      "auth_path_ms": 0.01611599998341262,
+      "stark_prove_ms": 32.91869800000313,
+      "python_checks_ms": 0.08594400000561109,
+      "verify_ms": 0.6476530000156799,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 12,
+      "is_warmup": false,
+      "setup_ms": 0.0016259999995327235,
+      "auth_path_ms": 0.016883999990113807,
+      "stark_prove_ms": 32.65488799999616,
+      "python_checks_ms": 0.03287500001647459,
+      "verify_ms": 0.6882389999987026,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 13,
+      "is_warmup": false,
+      "setup_ms": 0.0015119999829948938,
+      "auth_path_ms": 0.016250000015816113,
+      "stark_prove_ms": 32.66155999997977,
+      "python_checks_ms": 0.031171000017593542,
+      "verify_ms": 0.8203099999946062,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 14,
+      "is_warmup": false,
+      "setup_ms": 0.0014599999929032492,
+      "auth_path_ms": 0.015590000003840032,
+      "stark_prove_ms": 32.28833399998621,
+      "python_checks_ms": 0.0312630000109948,
+      "verify_ms": 0.74530399999162,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 15,
+      "is_warmup": false,
+      "setup_ms": 0.001251999975693252,
+      "auth_path_ms": 0.016339000012521865,
+      "stark_prove_ms": 32.340688000005,
+      "python_checks_ms": 0.036445000006324335,
+      "verify_ms": 0.707957999992459,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 16,
+      "is_warmup": false,
+      "setup_ms": 0.001497999988941956,
+      "auth_path_ms": 0.017421000023887245,
+      "stark_prove_ms": 32.213903999974036,
+      "python_checks_ms": 0.03257400001643873,
+      "verify_ms": 0.6541239999933168,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 17,
+      "is_warmup": false,
+      "setup_ms": 0.001620999995566308,
+      "auth_path_ms": 0.01817800000480929,
+      "stark_prove_ms": 31.952261999975917,
+      "python_checks_ms": 0.03006900001878421,
+      "verify_ms": 0.6387459999928069,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 18,
+      "is_warmup": false,
+      "setup_ms": 0.0014519999922413263,
+      "auth_path_ms": 0.014915000008386414,
+      "stark_prove_ms": 33.81962099999214,
+      "python_checks_ms": 0.028635000006715927,
+      "verify_ms": 0.6069639999850551,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    },
+    {
+      "iteration": 19,
+      "is_warmup": false,
+      "setup_ms": 0.0014000000021496817,
+      "auth_path_ms": 0.013656999982458728,
+      "stark_prove_ms": 32.13669900000582,
+      "python_checks_ms": 0.028944999996838305,
+      "verify_ms": 0.6321030000151495,
+      "proof_size_bytes": 96602,
+      "verify_ok": true
+    }
+  ],
+  "summary": {
+    "phases": {
+      "setup": {
+        "name": "setup",
+        "n": 20,
+        "mean_ms": 0.0018237999952930295,
+        "median_ms": 0.0018905000018776263,
+        "stdev_ms": 0.00034297162925190917,
+        "min_ms": 0.001251999975693252,
+        "max_ms": 0.0024069999824405386
+      },
+      "auth_path": {
+        "name": "auth_path",
+        "n": 20,
+        "mean_ms": 0.018449200000247856,
+        "median_ms": 0.018882000006215094,
+        "stdev_ms": 0.002506316410704644,
+        "min_ms": 0.013656999982458728,
+        "max_ms": 0.022286999978859967
+      },
+      "stark_prove": {
+        "name": "stark_prove",
+        "n": 20,
+        "mean_ms": 32.76443994999596,
+        "median_ms": 32.67520699999693,
+        "stdev_ms": 0.5441983684393059,
+        "min_ms": 31.952261999975917,
+        "max_ms": 34.12104799997451
+      },
+      "python_checks": {
+        "name": "python_checks",
+        "n": 20,
+        "mean_ms": 0.03896785000421232,
+        "median_ms": 0.03950350000536673,
+        "stdev_ms": 0.012204392090361647,
+        "min_ms": 0.028635000006715927,
+        "max_ms": 0.08594400000561109
+      },
+      "verify": {
+        "name": "verify",
+        "n": 20,
+        "mean_ms": 0.6945547500023963,
+        "median_ms": 0.6912869999950999,
+        "stdev_ms": 0.05611416675937244,
+        "min_ms": 0.6069639999850551,
+        "max_ms": 0.8256970000104502
+      },
+      "TOTAL": {
+        "name": "TOTAL",
+        "n": 20,
+        "mean_ms": 33.51823554999811,
+        "median_ms": 33.532791500007875,
+        "stdev_ms": 0.543544604863406,
+        "min_ms": 32.640875999987884,
+        "max_ms": 34.845947999997406
+      }
+    },
+    "percentage_breakdown_of_mean_total": {
+      "setup": 0.005441217192272916,
+      "auth_path": 0.05504227683085453,
+      "stark_prove": 97.75108806405476,
+      "python_checks": 0.11625865551927754,
+      "verify": 2.072169786402839
+    },
+    "proof_size_bytes": {
+      "min": 96602,
+      "max": 96602,
+      "mean": 96602
+    },
+    "all_verify_ok": true
+  }
+}

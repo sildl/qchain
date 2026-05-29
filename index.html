@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QChain — Post-quantum research blockchain with audit-readiness discipline</title>
+<meta name="description" content="A research blockchain combining post-quantum signatures, quantum-randomized consensus, and hand-rolled zk-STARK shielded payments. 499 tests. 23-entry threat model. 5 self-disclosed bugs. Ready for external audit.">
+
+<!-- Open Graph / social previews -->
+<meta property="og:title" content="QChain">
+<meta property="og:description" content="Post-quantum research blockchain with hand-rolled zk-STARKs. 499 tests. Audit-ready.">
+<meta property="og:type" content="website">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0d1320;
+    --bg-2: #141c2f;
+    --bg-card: rgba(20, 28, 50, 0.55);
+    --border: #2a3756;
+    --text: #e6ebf5;
+    --text-dim: #b8c2e0;
+    --text-mute: #98a2b3;
+    --text-faint: #6b7589;
+    --accent: #cdd8ff;
+    --gold: #d4a847;
+    --green: #4ade80;
+    --purple: #c89bff;
+    --red: #f87171;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--gold); }
+
+  /* Subtle background grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(42, 55, 86, 0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42, 55, 86, 0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13, 19, 32, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand {
+    font-family: var(--mono); font-weight: 700;
+    color: var(--accent); letter-spacing: 4px; font-size: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-mark {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--accent), #6b7ec4);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); font-size: 14px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent); color: var(--bg) !important;
+    padding: 8px 18px; border-radius: 4px;
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold); transform: translateY(-1px); }
+  @media (max-width: 720px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 32px;
+    position: relative; z-index: 1;
+  }
+  section { padding: 96px 0; position: relative; }
+  @media (max-width: 720px) {
+    section { padding: 64px 0; }
+    .container { padding: 0 20px; }
+  }
+
+  /* Hero */
+  .hero { padding: 120px 0 96px; }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--gold); letter-spacing: 6px;
+    margin-bottom: 24px; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(64px, 14vw, 168px);
+    color: var(--accent);
+    letter-spacing: -3px; line-height: 1;
+    margin-bottom: 28px;
+  }
+  .hero-sub {
+    font-size: clamp(18px, 2.2vw, 24px);
+    color: var(--text-dim);
+    max-width: 800px;
+    font-weight: 300;
+    line-height: 1.45;
+    margin-bottom: 40px;
+  }
+  .hero-chips {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 48px;
+  }
+  .chip {
+    font-family: var(--mono); font-size: 12px;
+    padding: 8px 16px; border: 1px solid var(--border);
+    border-radius: 4px; color: var(--text-dim);
+    background: var(--bg-card);
+  }
+  .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 24px; border-radius: 6px;
+    font-family: var(--mono); font-weight: 700; font-size: 14px;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--bg) !important;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover {
+    background: var(--gold); border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    color: var(--text-dim) !important;
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    color: var(--accent) !important; border-color: var(--accent);
+  }
+
+  /* Section heads */
+  .section-eyebrow {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--gold); letter-spacing: 5px;
+    margin-bottom: 16px; text-transform: uppercase;
+  }
+  .section-title {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    color: var(--accent);
+    letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 18px; color: var(--text-mute);
+    margin-bottom: 56px;
+    font-style: italic;
+    max-width: 720px;
+  }
+
+  /* Card grid */
+  .grid { display: grid; gap: 24px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 960px) {
+    .grid-3, .grid-4, .grid-5 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    transition: all 0.25s;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .card-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--mono); font-weight: 700; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .card h3 {
+    font-family: var(--mono); font-size: 17px;
+    color: var(--accent); margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .card p {
+    color: var(--text-mute); font-size: 14px; line-height: 1.6;
+  }
+
+  /* Two-adversary */
+  .threats { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 720px) { .threats { grid-template-columns: 1fr; } }
+  .threat {
+    padding: 36px; background: var(--bg-card);
+    border: 1px solid var(--border); border-left: 3px solid var(--red);
+    border-radius: 8px;
+  }
+  .threat-label {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--red); letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .threat h3 {
+    font-family: var(--mono); font-size: 24px;
+    color: var(--accent); margin-bottom: 14px; line-height: 1.25;
+  }
+  .threat p { color: var(--text-mute); font-size: 15px; margin-bottom: 24px; }
+  .threat-answer {
+    padding-top: 24px; border-top: 1px solid var(--border);
+  }
+  .threat-answer-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--green); letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .threat-answer-text { color: var(--green); font-size: 15px; }
+
+  /* Privacy matrix */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px; min-width: 720px;
+  }
+  th, td {
+    text-align: left; padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--accent); text-transform: uppercase;
+    letter-spacing: 1.5px; border-bottom: 2px solid var(--accent);
+  }
+  td { color: var(--text-dim); }
+  .matrix th:not(:first-child), .matrix td:not(:first-child) { text-align: center; }
+  .yes { color: var(--green); font-weight: 700; font-size: 17px; }
+  .no { color: var(--red); font-weight: 700; font-size: 17px; }
+  .na { color: var(--text-faint); font-style: italic; }
+
+  /* Killer demo */
+  .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 720px) { .demo { grid-template-columns: 1fr; } }
+  .spend {
+    background: var(--bg-2); border-left: 3px solid var(--purple);
+    padding: 28px; border-radius: 6px;
+    font-family: var(--mono);
+  }
+  .spend-label {
+    font-size: 12px; color: var(--purple);
+    letter-spacing: 3px; margin-bottom: 22px; font-weight: 700;
+  }
+  .spend-row {
+    display: grid; grid-template-columns: 130px 1fr;
+    padding: 7px 0; font-size: 13px;
+  }
+  .spend-k { color: var(--text-mute); }
+  .spend-v { color: var(--text); word-break: break-all; }
+  .spend-v.highlight { color: var(--gold); font-weight: 700; }
+  .demo-footer {
+    text-align: center; margin-top: 28px;
+    font-family: var(--mono); font-size: 13px;
+    color: var(--gold); letter-spacing: 1.5px;
+  }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  @media (max-width: 720px) { .stats { grid-template-columns: 1fr; } }
+  .stat { text-align: center; padding: 32px 16px; }
+  .stat-n {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(56px, 10vw, 96px);
+    color: var(--accent); line-height: 1;
+  }
+  .stat-n.purple { color: var(--purple); }
+  .stat-n.green { color: var(--green); }
+  .stat-n.gold { color: var(--gold); }
+  .stat-unit { font-size: 36px; color: var(--text-dim); margin-left: 4px; }
+  .stat-lbl {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--text-mute); text-transform: uppercase;
+    letter-spacing: 2px; margin-top: 16px;
+  }
+
+  /* Bar chart */
+  .chart {
+    margin-top: 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+  }
+  .chart-title {
+    font-family: var(--mono); font-size: 14px;
+    color: var(--accent); margin-bottom: 24px; letter-spacing: 1px;
+  }
+  .bars {
+    display: flex; align-items: flex-end; justify-content: space-around;
+    height: 240px; padding: 30px 0 0;
+    border-bottom: 2px solid var(--border);
+  }
+  .bar-col {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    align-items: center; flex: 1; height: 100%;
+  }
+  .bar {
+    width: 60%; max-width: 60px;
+    background: linear-gradient(180deg, #6b7ec4 0%, var(--accent) 100%);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+  }
+  .bar.purple {
+    background: linear-gradient(180deg, #8b5cf6 0%, var(--purple) 100%);
+  }
+  .bar-val {
+    position: absolute; top: -26px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 13px;
+    color: var(--accent); font-weight: 700; white-space: nowrap;
+  }
+  .bar-labels {
+    display: flex; justify-content: space-around;
+    padding-top: 14px;
+  }
+  .bar-lbl {
+    flex: 1; text-align: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); line-height: 1.4;
+  }
+  .bar-lbl .sub {
+    color: var(--text-faint); display: block;
+    margin-top: 3px; font-size: 10px;
+  }
+
+  /* Gap table */
+  .gap-table { font-size: 14px; }
+  .gap-table td:first-child {
+    font-family: var(--mono); font-weight: 700;
+    color: var(--accent); text-align: center; width: 60px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 3px;
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .badge.open { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+  .badge.closed { background: rgba(74, 222, 128, 0.15); color: var(--green); }
+  .badge.formal { background: rgba(205, 216, 255, 0.12); color: var(--accent); }
+  .badge.heuristic { background: rgba(212, 168, 71, 0.15); color: var(--gold); }
+  .badge.modulo { background: rgba(200, 155, 255, 0.15); color: var(--purple); }
+
+  /* Honest scope list */
+  .scope-list { display: grid; gap: 16px; }
+  .scope-item {
+    display: flex; gap: 18px; align-items: flex-start;
+    padding: 18px 24px; background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 6px;
+  }
+  .scope-mark {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(248, 113, 113, 0.15); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: var(--mono); flex-shrink: 0;
+    font-size: 14px;
+  }
+  .scope-item b { color: var(--accent); }
+  .scope-item span { color: var(--text-mute); font-size: 14px; }
+
+  /* Code block */
+  pre.code {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    font-family: var(--mono); font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: var(--text);
+  }
+  pre.code .c { color: var(--text-faint); }
+  pre.code .k { color: var(--purple); }
+  pre.code .v { color: var(--gold); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 56px 0 40px;
+    margin-top: 64px;
+    text-align: center;
+  }
+  .footer-title {
+    font-family: var(--mono); font-weight: 700;
+    font-size: 64px; color: var(--accent);
+    margin-bottom: 12px; letter-spacing: -2px;
+  }
+  .footer-tag {
+    font-style: italic; font-size: 18px;
+    color: var(--text-dim); margin-bottom: 32px;
+  }
+  .footer-tagline {
+    font-family: var(--mono); color: var(--gold);
+    font-size: 14px; letter-spacing: 2px; margin-bottom: 24px;
+  }
+  .footer-note {
+    color: var(--text-faint); font-size: 13px;
+    max-width: 680px; margin: 0 auto;
+    line-height: 1.7;
+  }
+  .footer-links {
+    margin-top: 40px; padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: center; gap: 32px;
+    flex-wrap: wrap;
+    font-family: var(--mono); font-size: 13px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- =================== NAV =================== -->
+<nav>
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span>QCHAIN</span>
+    </div>
+    <div class="nav-links">
+      <a href="#pillars">Pillars</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#stark">zk-STARK</a>
+      <a href="#audit">Audit-readiness</a>
+      <a href="#numbers">Numbers</a>
+      <a href="#scope">Honest scope</a>
+      <a href="https://github.com/sildl/qchain" class="nav-cta">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =================== HERO =================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Research project · audit-readiness arc complete · 499 tests</div>
+    <h1>QChain</h1>
+    <p class="hero-sub">
+      A post-quantum research blockchain with hand-rolled zk-STARK shielded payments,
+      built with audit-readiness discipline. 23-entry threat model. 5 self-disclosed
+      bugs. Ready for external review.
+    </p>
+    <div class="hero-chips">
+      <div class="chip">post-quantum sigs</div>
+      <div class="chip">quantum randomness</div>
+      <div class="chip">zk-STARK proofs</div>
+      <div class="chip">shielded notes</div>
+      <div class="chip">P2P gossip</div>
+      <div class="chip">rate limiting</div>
+      <div class="chip">wallet encryption</div>
+      <div class="chip">differential AIR testing</div>
+      <div class="chip">honest scope</div>
+    </div>
+    <div class="hero-cta">
+      <a href="https://github.com/sildl/qchain" class="btn btn-primary">
+        View on GitHub →
+      </a>
+      <a href="#audit" class="btn btn-ghost">
+        Read the audit package
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== WHAT IT IS =================== -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">ELEVATOR PITCH</div>
+    <h2 class="section-title">What is this?</h2>
+    <p class="section-sub">
+      QChain explores what it takes to build a system secure against today's adversaries
+      AND against future quantum computers AND with real privacy AND on a working
+      peer-to-peer network — all in one coherent project, with every claim traceable
+      to code and tests.
+    </p>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>What it is</h3>
+        <p>A complete research blockchain: transparent, shielded, and fully-anonymous
+        transactions coexist in the same blocks, gossiped between real nodes, with a
+        hand-rolled zk-STARK system written in Rust. Persistent, encrypted, rate-limited,
+        authenticated.</p>
+      </div>
+      <div class="card">
+        <h3>What it teaches</h3>
+        <p>Post-quantum signatures, quantum randomness, zk-STARK design from scratch
+        (AIR, FRI, Fiat-Shamir), shielded pool design, P2P consensus, fork resolution —
+        and how to apply audit-readiness discipline across the full stack.</p>
+      </div>
+      <div class="card">
+        <h3>What it isn't</h3>
+        <p>Production cryptocurrency software. No BFT consensus, no TLS, no peer
+        authentication, no peer-reviewed cryptographic analysis. Every limitation is
+        documented as a numbered threat with explicit status; nothing is hidden in the
+        margins.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TWO ADVERSARIES =================== -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">THE THREAT MODEL</div>
+    <h2 class="section-title">Two attacks. One chain that has to survive both.</h2>
+    <p class="section-sub">Today's blockchains face two adversaries that aren't going away.</p>
+    <div class="threats">
+      <div class="threat">
+        <div class="threat-label">⚛ QUANTUM ADVERSARY</div>
+        <h3>Shor's algorithm forges ECDSA</h3>
+        <p>A sufficiently large quantum computer recovers private keys from public
+        keys in polynomial time. Every secp256k1-signed transaction on Bitcoin /
+        Ethereum becomes forgeable retroactively.</p>
+        <div class="threat-answer">
+          <div class="threat-answer-label">OUR ANSWER</div>
+          <div class="threat-answer-text">Sign with Dilithium (NIST FIPS 204).</div>
+        </div>
+      </div>
+      <div class="threat">
+        <div class="threat-label">👁 SURVEILLANCE ADVERSARY</div>
+        <h3>Public ledgers leak everything</h3>
+        <p>Bitcoin and Ethereum reveal sender, recipient, and amount of every
+        payment. Address clustering deanonymizes most users within months of normal
+        activity.</p>
+        <div class="threat-answer">
+          <div class="threat-answer-label">OUR ANSWER</div>
+          <div class="threat-answer-text">Spend via zero-knowledge STARK proof of ownership.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FIVE PILLARS =================== -->
+<section id="pillars">
+  <div class="container">
+    <div class="section-eyebrow">THE BIG IDEA</div>
+    <h2 class="section-title">Five technical pillars</h2>
+    <p class="section-sub">Each implemented end-to-end. Not stubbed.</p>
+    <div class="grid grid-5">
+      <div class="card">
+        <div class="card-num">1</div>
+        <h3>Post-quantum signatures</h3>
+        <p>Dilithium / ML-DSA-65 (NIST FIPS 204) replaces ECDSA on every transaction.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">2</div>
+        <h3>Quantum randomness</h3>
+        <p>IBM Quantum QPU seeds stake-weighted PoS proposer selection.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">3</div>
+        <h3>Hand-rolled zk-STARKs</h3>
+        <p>Custom AIR over Goldilocks in Rust. 110 tests including adversarial cases.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">4</div>
+        <h3>Full P2P network</h3>
+        <p>TCP gossip, message dedup, fork resolution, per-peer rate limiting.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">5</div>
+        <h3>Live dashboard</h3>
+        <p>FastAPI + WebSocket + React UI. Bearer-token auth. Multi-node convergence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PRIVACY MATRIX =================== -->
+<section id="privacy">
+  <div class="container">
+    <div class="section-eyebrow">PRIVACY MATRIX</div>
+    <h2 class="section-title">What each privacy layer hides</h2>
+    <p class="section-sub">Compose them as needed. Or use all three.</p>
+    <div class="table-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Transparent</th>
+            <th>Shielded (M3)</th>
+            <th>Schnorr Anon (M4)</th>
+            <th>STARK Anon (M8.6+)</th>
+            <th>Mixer (M10)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Note values hidden</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="na">fixed denom</td></tr>
+          <tr><td>Recipient pubkey hidden</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Spender pubkey hidden</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Cross-spend unlinkability</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Which leaf was spent: hidden</td><td class="na">n/a</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Value conservation in-proof</td><td class="na">n/a</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Same-block timing defense</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="yes">✓</td></tr>
+          <tr><td>Anonymity set size</td><td class="na">n/a</td><td class="na">n/a</td><td>—</td><td class="yes">1,048,576</td><td>per denom</td></tr>
+          <tr><td>Post-quantum safe</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =================== KILLER DEMO =================== -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">KILLER DEMO · UNLINKABILITY</div>
+    <h2 class="section-title">The same wallet. Two spends. Unlinkable.</h2>
+    <p class="section-sub">What an external observer sees from each transaction.</p>
+    <div class="demo">
+      <div class="spend">
+        <div class="spend-label">SPEND A</div>
+        <div class="spend-row"><span class="spend-k">nullifier</span><span class="spend-v">63805cdddc692bd0…</span></div>
+        <div class="spend-row"><span class="spend-k">leaf spent</span><span class="spend-v">47f6c04a6e03ed45…</span></div>
+        <div class="spend-row"><span class="spend-k">value commit</span><span class="spend-v">0269eaf7239315e3…</span></div>
+        <div class="spend-row"><span class="spend-k">pubkey commit</span><span class="spend-v highlight">02a4ff6a76084adb…</span></div>
+        <div class="spend-row"><span class="spend-k">schnorr R</span><span class="spend-v">021fc3089cdc1a20…</span></div>
+      </div>
+      <div class="spend">
+        <div class="spend-label">SPEND B</div>
+        <div class="spend-row"><span class="spend-k">nullifier</span><span class="spend-v">ce0ad2f4c01929ac…</span></div>
+        <div class="spend-row"><span class="spend-k">leaf spent</span><span class="spend-v">561ca119d6037344…</span></div>
+        <div class="spend-row"><span class="spend-k">value commit</span><span class="spend-v">02cc03b10c7ea0a0…</span></div>
+        <div class="spend-row"><span class="spend-k">pubkey commit</span><span class="spend-v highlight">02180887a34fef5f…</span></div>
+        <div class="spend-row"><span class="spend-k">schnorr R</span><span class="spend-v">03e2615d7f20763c…</span></div>
+      </div>
+    </div>
+    <div class="demo-footer">
+      BOTH ARE ALICE · THE PUBKEY COMMITMENTS ARE FRESH RANDOMIZATIONS OF HER SINGLE LONG-TERM KEY
+    </div>
+  </div>
+</section>
+
+<!-- =================== zk-STARK =================== -->
+<section id="stark">
+  <div class="container">
+    <div class="section-eyebrow">MILESTONE 8 · ZK-STARK FROM SCRATCH</div>
+    <h2 class="section-title">The gap M4 left open</h2>
+    <p class="section-sub">
+      M4's Schnorr proofs reveal the specific leaf being spent. And Schnorr breaks
+      under quantum. So we built our own zk-STARK system in Rust.
+    </p>
+    <div class="grid grid-3" style="margin-bottom: 56px;">
+      <div class="card">
+        <h3>The gap</h3>
+        <p>M4 reveals which leaf was spent through the public Merkle path. That's
+        unlinkable identity, not real anonymity. And Schnorr falls to Shor's algorithm.</p>
+      </div>
+      <div class="card">
+        <h3>What zk-STARK gives</h3>
+        <p>A succinct proof that the spender knows <em>some</em> leaf in the pool —
+        without revealing which one. Hash-based, quantum-safe by construction.</p>
+      </div>
+      <div class="card">
+        <h3>Why hand-rolled</h3>
+        <p>Using an existing SNARK library would hide the AIR design choices that
+        matter. The premise is honest cryptography end-to-end. Built on Winterfell;
+        the AIR is ours.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family: var(--mono); font-size: 20px; color: var(--accent); margin-bottom: 16px;">
+      Inside M8.3 — the AIR architecture
+    </h3>
+<pre class="code"><span class="c">// trace layout: 17 cols × 64 rows</span>
+Block 0 (rows  0– 7):  LEAF       → P0
+Block 1 (rows  8–15):  P0  + sib₁ → P1
+Block 2 (rows 16–23):  P1  + sib₂ → P2
+Block 3 (rows 24–31):  P2  + sib₃ → ROOT
+Rows 32–63: padding (state unchanged)
+
+<span class="c">// four constraint groups, all gated by periodic columns</span>
+hash round         <span class="k">deg 8</span>    Rescue-Prime equation, fires within-block
+block boundary     <span class="k">deg 3</span>    next.input = swap_by_dir(prev.output, sibling)
+witness static     <span class="k">deg 2</span>    dir and sib stay constant within each 8-row block
+direction binary   <span class="k">deg 2</span>    dir × (dir − 1) = 0   — every direction bit is 0 or 1</pre>
+  </div>
+</section>
+
+<!-- =================== GAPS CLOSED =================== -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">MILESTONES 8.5 → AUDIT-READINESS ARC</div>
+    <h2 class="section-title">Every gap. Closed in scope.</h2>
+    <p class="section-sub">
+      Every limitation shipped open. Every closure has its own milestone or pass.
+      None hand-waved.
+    </p>
+    <div class="table-wrap">
+      <table class="gap-table">
+        <thead>
+          <tr><th>Gap</th><th>What it was</th><th>Original</th><th>Status</th><th>Closed by</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td>Value conservation — unshield amount not bound to leaf value</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.8-A1 (range proof via 64 bit-decomposition cols)</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td>Nullifier binding — same note spendable many times</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.6 (AIR computes nullifier = H(sk+1, r, v))</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>Anonymity set ≤ 16 — too small to hide spends</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.9 (sparse Merkle depth 20, set size 1,048,576)</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td>Pool not chain-replicated — each node had its own pool</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.7-D (ShieldTransaction gossiped + replayed)</td>
+          </tr>
+          <tr>
+            <td>E</td>
+            <td>Partial-spend change outputs — every spend consumed full leaf</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.11 (4 phases — change-output AIR + value-binding)</td>
+          </tr>
+          <tr>
+            <td>—</td>
+            <td>Chain-replay validation pattern (M8.10 admission ≡ replay)</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M8.10 (is_valid() re-verifies historical proofs)</td>
+          </tr>
+          <tr>
+            <td>F</td>
+            <td>Persistence — chain &amp; wallet in-memory only</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>PERSISTENCE pass (versioned JSON, restart-safe)</td>
+          </tr>
+          <tr>
+            <td>G</td>
+            <td>Mixer pool — fixed denomination + timing-attack defense (T13)</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>M10 (4 phases) + M-timing (historical-root anchoring)</td>
+          </tr>
+          <tr>
+            <td>H</td>
+            <td>Coinbase inflation — replay-side reward check missing</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>AUDIT-FOLLOWUP (self-found; replay validation added)</td>
+          </tr>
+          <tr>
+            <td>I</td>
+            <td>Transparent-tx replay — same tx mineable twice (found by Hypothesis)</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>PROPERTY-TESTING (self-found; mined_txids set added)</td>
+          </tr>
+          <tr>
+            <td>J</td>
+            <td>Wallet key compromise (T21) — plaintext JSON only</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>WALLET-KEY-ENCRYPTION (argon2id + AES-256-GCM)</td>
+          </tr>
+          <tr>
+            <td>K</td>
+            <td>Gossip flood / DoS (T15, T23) — unbounded message rate</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>RATE-LIMITING (per-peer per-msg sliding window + MAX_BLOCK_TX)</td>
+          </tr>
+          <tr>
+            <td>L</td>
+            <td>Dashboard endpoint abuse (T22) — unauthenticated /api</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>DASHBOARD-AUTH (bearer-token auth on all /api and /ws)</td>
+          </tr>
+          <tr>
+            <td>M</td>
+            <td>Same-height-fork ping-pong — infinite get_blocks loop (self-found)</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>RATE-LIMITING side-effect (one-line guard in _handle_blocks)</td>
+          </tr>
+          <tr>
+            <td>N</td>
+            <td>Rescue-Prime constants source bug (Winterfell-extracted)</td>
+            <td><span class="badge open">OPEN</span></td>
+            <td><span class="badge closed">CLOSED</span></td>
+            <td>DIFFERENTIAL-AIR-PHASE3 (algebraic + regression + snapshot harness)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =================== AUDIT READINESS =================== -->
+<section id="audit">
+  <div class="container">
+    <div class="section-eyebrow">AUDIT-READINESS ARC</div>
+    <h2 class="section-title">Engineering complete. Awaiting external eyes.</h2>
+    <p class="section-sub">
+      Over the past year, the project ran a deliberate audit-readiness arc:
+      11 passes designed to make external review productive. The arc is done.
+      The materials are public. The next step is engagement, not more code.
+    </p>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>5-tier threat taxonomy</h3>
+        <p><span class="badge formal">FORMAL</span> · <span class="badge modulo">FORMAL, MODULO</span> ·
+        <span class="badge closed">DEFENDED</span> · <span class="badge heuristic">HEURISTIC</span> ·
+        <span class="badge open">NOT DEFENDED</span>. Every threat scored honestly. Reading the threat model is reading the codebase.</p>
+      </div>
+      <div class="card">
+        <h3>5 self-disclosed bugs</h3>
+        <p>Coinbase inflation, transparent-tx replay (Hypothesis-found), same-height-fork ping-pong,
+        and two doc-vs-code drift defects. All documented with discovery mechanism and fix.</p>
+      </div>
+      <div class="card">
+        <h3>3-layer differential AIR testing</h3>
+        <p>Layer 1: algebraic self-checks. Layer 2: regression vectors. Layer 3: snapshot harness.
+        Catches the "circuit is wrong but positive examples pass" class of bug.</p>
+      </div>
+      <div class="card">
+        <h3>23 numbered threats</h3>
+        <p>T1–T23 with explicit status, code references, and test references.
+        20 actively defended; 2 explicitly out of scope; 1 partially defended.</p>
+      </div>
+      <div class="card">
+        <h3>44 maintained docs</h3>
+        <p>Milestone READMEs, audit package, threat model, publication, SoW,
+        grant application, outreach plan. Every cross-reference checked.</p>
+      </div>
+      <div class="card">
+        <h3>Ready for engagement</h3>
+        <p>AUDIT-SOW.md, AUDITOR-ONBOARDING.md, AUDIT-GRANT-APPLICATION.md,
+        AUDIT-OUTREACH.md. The procurement layer is in place.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 56px; text-align: center;">
+      <a href="https://github.com/sildl/qchain/blob/main/PUBLICATION.pdf" class="btn btn-primary">
+        Read the publication (13 pages) →
+      </a>
+      <a href="https://github.com/sildl/qchain/blob/main/AUDIT-PACKAGE.md" class="btn btn-ghost" style="margin-left: 12px;">
+        Open AUDIT-PACKAGE.md
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== BY THE NUMBERS =================== -->
+<section id="numbers">
+  <div class="container">
+    <div class="section-eyebrow">BY THE NUMBERS</div>
+    <h2 class="section-title">Real evidence. Measured.</h2>
+    <p class="section-sub">No marketing math. The numbers are what they are.</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-n">499</div>
+        <div class="stat-lbl">tests passing<br>110 Rust · 21 PyO3 · 368 Python</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n purple">23</div>
+        <div class="stat-lbl">numbered threats<br>20 defended · 2 documented gaps</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n green">5</div>
+        <div class="stat-lbl">self-disclosed bugs<br>all fixed · all documented</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n gold">44</div>
+        <div class="stat-lbl">maintained docs<br>cross-refs auto-checked</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n purple">1,048,576</div>
+        <div class="stat-lbl">STARK anonymity set<br>sparse Merkle depth 20</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n green">3</div>
+        <div class="stat-lbl">differential AIR layers<br>algebraic · regression · snapshot</div>
+      </div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">STARK proving time · ms per proof · historical milestone progression</div>
+      <div class="bars">
+        <div class="bar-col"><div class="bar" style="height: 168px;"><div class="bar-val">15.0</div></div></div>
+        <div class="bar-col"><div class="bar" style="height: 10px;"><div class="bar-val">0.5</div></div></div>
+        <div class="bar-col"><div class="bar" style="height: 45px;"><div class="bar-val">2.8</div></div></div>
+        <div class="bar-col"><div class="bar purple" style="height: 55px;"><div class="bar-val">3.4</div></div></div>
+        <div class="bar-col"><div class="bar purple" style="height: 105px;"><div class="bar-val">6.6</div></div></div>
+        <div class="bar-col"><div class="bar purple" style="height: 220px;"><div class="bar-val">22.0</div></div></div>
+      </div>
+      <div class="bar-labels">
+        <div class="bar-lbl">M8.1<span class="sub">Fibonacci</span></div>
+        <div class="bar-lbl">M8.2<span class="sub">Preimage</span></div>
+        <div class="bar-lbl">M8.3<span class="sub">Merkle d=4</span></div>
+        <div class="bar-lbl">M8.6<span class="sub">+ nullifier</span></div>
+        <div class="bar-lbl">M8.7<span class="sub">depth 8</span></div>
+        <div class="bar-lbl">M8.8-A1<span class="sub">depth 16</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== HONEST SCOPE =================== -->
+<section id="scope">
+  <div class="container">
+    <div class="section-eyebrow">HONEST SCOPE</div>
+    <h2 class="section-title">What's still NOT done — said openly</h2>
+    <p class="section-sub">
+      The line between cryptography and crypto-LARP is honesty about what works and what doesn't.
+      These are the standing limitations after the full audit-readiness arc.
+    </p>
+    <div class="scope-list">
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No formal proof of AIR correctness</b> <span>— Differential testing in 3 layers catches several failure modes but is not a proof. Several threats marked [FORMAL, MODULO] ride on AIR correctness as their non-formal assumption.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No external security audit yet</b> <span>— The hand-rolled AIR and multi-pool composition have not been reviewed by a cryptography firm. The audit-readiness arc is preparation for this; outreach materials are ready.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No BFT for malicious-quorum PoS</b> <span>— PoS uses a single QRNG-seeded proposer. Real PoS would need fault tolerance against a fraction of malicious validators.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No peer authentication or TLS</b> <span>— Any node that completes the TCP handshake is treated as honest. Rate limiting bounds blast radius; it doesn't prevent participation.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No statistical timing-attack defense across blocks (T14)</b> <span>— Same-block defense (T13) covers single-block correlation. Long-term observation could still infer deposit-to-withdrawal pairings via statistical analysis.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No replay protection across networks (T20)</b> <span>— Transactions on one chain instance can be replayed onto another. Not relevant for single-network use; would matter for multi-network deployment.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No on-load chain validation (T18, partial)</b> <span>— Blockchain.load() doesn't call is_valid() on the loaded chain. A corrupt-but-parseable persistence file would be accepted without protocol-level invariants re-checked.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No off-chain note backup</b> <span>— The chain holds only leaf commitments; the spending witnesses live only in the wallet. Wallet file loss = unrecoverable notes by design.</span></div></div>
+      <div class="scope-item"><div class="scope-mark">!</div><div><b>No peer-reviewed cryptographic analysis</b> <span>— Audit-readiness is engineering discipline, not formal cryptographic review. Preparation for review, not substitute for it.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="container">
+    <div class="footer-title">QChain</div>
+    <div class="footer-tag">499 tests. 23 threats. 5 self-disclosed bugs. One chain.</div>
+    <div class="footer-tagline">REAL CRYPTOGRAPHY · HONEST SCOPE · WORKING CODE</div>
+    <p class="footer-note">
+      Every primitive in this project is a textbook construction with well-understood
+      security under standard assumptions. The AIR was hand-rolled in Rust. The
+      threat model says what's defended and what isn't. Where I cut corners, I said
+      so in the code. Where it works, the tests prove it.
+    </p>
+    <div class="footer-links">
+      <a href="https://github.com/sildl/qchain">GitHub →</a>
+      <a href="https://github.com/sildl/qchain/blob/main/PUBLICATION.pdf">Publication PDF</a>
+      <a href="https://github.com/sildl/qchain/blob/main/AUDIT-PACKAGE.md">Audit Package</a>
+      <a href="https://github.com/sildl/qchain/blob/main/THREAT-MODEL.md">Threat Model</a>
+      <a href="https://github.com/sildl/qchain/blob/main/ROADMAP.md">Roadmap</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

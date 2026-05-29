@@ -1,0 +1,58 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+build/
+dist/
+*.egg
+
+# --- Rust ---
+target/
+**/*.rs.bk
+Cargo.lock.bak
+
+# --- Maturin / PyO3 ---
+*.whl
+*.so
+*.dylib
+*.pyd
+
+# --- Local environments ---
+.venv/
+venv/
+env/
+!deploy/env/
+.env
+.envrc
+
+# --- IDE / editor ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# --- Operational ---
+# Wallet files and chain state should NEVER be committed
+*.wallet.json
+chain.json
+wallet_*.json
+
+# Local logs and debug output
+*.log
+/tmp/
+
+# --- Audit snapshots (added by user, not by initial commit) ---
+# Snapshots are JSON artifacts that an external contributor vendors;
+# the directory exists with a README but no snapshots are pre-shipped.
+# qchain/crypto/rescue_constants_snapshots/*.json   # (uncomment to ignore)

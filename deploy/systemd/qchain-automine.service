@@ -1,0 +1,42 @@
+[Unit]
+Description=QChain auto-miner (hits node-1 dashboard /api/mine periodically)
+Documentation=https://github.com/sildl/qchain
+# Don't start auto-mining until node-1's dashboard is up. The
+# auto-miner itself will tolerate transient failures, but waiting
+# avoids spam-warnings on initial boot.
+After=qchain-node-1.service
+Wants=qchain-node-1.service
+
+[Service]
+Type=simple
+User=qchain
+Group=qchain
+WorkingDirectory=/opt/qchain
+EnvironmentFile=/etc/qchain/qchain.env
+
+# Hit node-1's dashboard via localhost. The dashboard's existing
+# T22 bearer-token auth gates the /api/mine endpoint; we pass the
+# token from the env. Mining propagates from node-1 to nodes 2 and 3
+# via the p2p gossip layer.
+ExecStart=/usr/bin/python3 -m qchain.tools.auto_mine \
+    --target http://127.0.0.1:${QCHAIN_DASHBOARD_PORT} \
+    --interval ${QCHAIN_AUTOMINE_INTERVAL} \
+    --auth-token ${QCHAIN_DASHBOARD_TOKEN}
+
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=60
+StartLimitBurst=10
+
+StandardOutput=journal
+StandardError=journal
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+# Auto-miner doesn't need write access to anything
+ReadOnlyPaths=/opt/qchain
+
+[Install]
+WantedBy=multi-user.target
